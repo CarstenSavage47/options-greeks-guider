@@ -1,0 +1,6 @@
+dash==2.7.0
+loguru==0.6.0
+pandas==1.4.4
+py_vollib==1.0.1
+yfinance==0.2.18
+
