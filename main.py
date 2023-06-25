@@ -23,9 +23,20 @@ pandas.set_option("display.max_rows", None)
 pandas.options.display.float_format = "{:,.2f}".format
 pandas.set_option("display.max_columns", None)
 
+
 app = Dash(__name__)
 
 app.layout = layout
+
+
+today = date.today()
+next_3_months = [
+    today + timedelta(days=x) for x in range(90)
+]
+date_strings = [
+    d.strftime("%Y-%m-%d") for d in next_3_months
+]
+
 
 # Get call or puts decision
 @app.callback(

@@ -1,19 +1,8 @@
-import pandas
-import dash
 from dash import (
-    Dash,
     dcc,
     html,
-    Input,
-    Output,
-    State,
-    dash_table,
 )
-from loguru import logger
-import webbrowser
-import yfinance as yf
-import py_vollib.black_scholes as bs
-import py_vollib.black_scholes.greeks.analytical as bs_greeks
+
 from datetime import date, timedelta, datetime
 
 # Generate list of dates for expiration date dropdown
@@ -30,7 +19,7 @@ layout = html.Div(
         html.Div(
             [
                 html.H1(
-                    "Options Helper App",
+                    "Options Greeks Guider",
                     style={
                         "text-align": "left",
                         "font-size": "32px",
@@ -113,6 +102,9 @@ layout = html.Div(
                 "width": "45%",
             },
         ),
+html.Div(
+    [
+        # First Row
         html.Div(
             [
                 html.Div(
@@ -196,8 +188,15 @@ layout = html.Div(
                         "background-color": "#f9f9f9",
                         "box-shadow": "2px 2px 2px lightgrey",
                         "width": "300px",
+                        "align-items": "center",
                     },
                 ),
+            ],
+            style={"display": "flex", "flex-wrap": "wrap"},
+        ),
+        # Second Row
+        html.Div(
+            [
                 html.Div(
                     [
                         html.P(
@@ -223,6 +222,7 @@ layout = html.Div(
                         "background-color": "#f9f9f9",
                         "box-shadow": "2px 2px 2px lightgrey",
                         "width": "300px",
+                        "align-items": "center",
                     },
                 ),
                 html.Div(
@@ -250,6 +250,7 @@ layout = html.Div(
                         "background-color": "#f9f9f9",
                         "box-shadow": "2px 2px 2px lightgrey",
                         "width": "300px",
+                        "align-items": "center",
                     },
                 ),
                 html.Div(
@@ -277,9 +278,14 @@ layout = html.Div(
                         "background-color": "#f9f9f9",
                         "box-shadow": "2px 2px 2px lightgrey",
                         "width": "300px",
+                        "align-items": "center",
                     },
                 ),
-            ]
+            ],
+            style={"display": "flex", "flex-wrap": "wrap"},
         ),
+    ]
+)
+
     ]
 )
