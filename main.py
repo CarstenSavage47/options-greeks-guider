@@ -20,20 +20,37 @@ from layout import layout
 
 pandas.set_option("display.max_columns", None)
 pandas.set_option("display.max_rows", None)
-pandas.options.display.float_format = "{:,.2f}".format
+pandas.options.display.float_format = (
+    "{:,.2f}".format
+)
 pandas.set_option("display.max_columns", None)
+
 
 app = Dash(__name__)
 
 app.layout = layout
 
+
+today = date.today()
+next_3_months = [
+    today + timedelta(days=x) for x in range(90)
+]
+date_strings = [
+    d.strftime("%Y-%m-%d") for d in next_3_months
+]
+
+
 # Get call or puts decision
 @app.callback(
-    Output("calls-or-puts-dropdown-value", "data"),
+    Output(
+        "calls-or-puts-dropdown-value", "data"
+    ),
     Input("calls-or-puts-dropdown", "value"),
     prevent_initial_call=True,
 )
-def update_call_or_puts_callback(call_or_puts_decision):
+def update_call_or_puts_callback(
+    call_or_puts_decision,
+):
     if call_or_puts_decision is not None:
         call_or_puts_decision = (
             call_or_puts_decision.lower()
@@ -58,7 +75,8 @@ def get_the_tickers_and_strike_data(
 ):
     if (
         ticker_value is not None
-        and n_clicks_calls_puts_dropdown is not None
+        and n_clicks_calls_puts_dropdown
+        is not None
         and n_clicks_submit_ticker > 0
         and strike_input is not None
     ):
@@ -69,9 +87,12 @@ def get_the_tickers_and_strike_data(
 # Get desired expiration date
 @app.callback(
     Output(
-        "selected-expiration-date-dropdown-value", "data"
+        "selected-expiration-date-dropdown-value",
+        "data",
     ),
-    Input("select-expiration-date-dropdown", "value"),
+    Input(
+        "select-expiration-date-dropdown", "value"
+    ),
     prevent_initial_call=True,
 )
 def update_call_or_puts_callback(date):
@@ -84,7 +105,8 @@ def update_call_or_puts_callback(date):
     Input("calls-or-puts-dropdown", "value"),
     Input("ticker-output", "data"),
     Input(
-        "selected-expiration-date-dropdown-value", "data"
+        "selected-expiration-date-dropdown-value",
+        "data",
     ),
     Input("strike-output-value", "data"),
     Input("submit-button", "n_clicks"),
@@ -111,13 +133,17 @@ def get_the_initial_option_chain_data(
                 "previousClose"
             ]
         else:
-            stock_current_price = ticker_dict["ask"]
+            stock_current_price = ticker_dict[
+                "ask"
+            ]
         # Get row in option chain
         ticker_obj = yf.Ticker(ticker_value)
         if "call" in call_or_put_choice:
-            options_chain = ticker_obj.option_chain(
-                desired_expiration_date
-            ).calls
+            options_chain = (
+                ticker_obj.option_chain(
+                    desired_expiration_date
+                ).calls
+            )
             options_chain = options_chain[
                 options_chain["strike"]
                 == float(desired_strike)
@@ -131,12 +157,17 @@ def get_the_initial_option_chain_data(
             logger.debug(stock_current_price)
             logger.debug(options_chain)
             return options_chain
-        elif "call" in call_or_put_choice and ValueError:
+        elif (
+            "call" in call_or_put_choice
+            and ValueError
+        ):
             return "Not a valid strike date"
         elif "put" in call_or_put_choice:
-            options_chain = ticker_obj.option_chain(
-                desired_expiration_date
-            ).puts
+            options_chain = (
+                ticker_obj.option_chain(
+                    desired_expiration_date
+                ).puts
+            )
             options_chain = options_chain[
                 options_chain["strike"]
                 == float(desired_strike)
@@ -155,10 +186,13 @@ def get_the_initial_option_chain_data(
 
 
 @app.callback(
-    Output("ready-for-Black-Scholes-dict", "data"),
+    Output(
+        "ready-for-Black-Scholes-dict", "data"
+    ),
     Input("selected-option-chain-row", "data"),
     Input(
-        "selected-expiration-date-dropdown-value", "data"
+        "selected-expiration-date-dropdown-value",
+        "data",
     ),
     Input("submit-button", "n_clicks"),
     prevent_initial_call=True,
@@ -172,9 +206,12 @@ def get_ready_for_black_sholes_dict(
         option_chain_dict is not None
         and submit_button is not None
     ):
-        desired_expiration_date = datetime.strptime(
-            desired_expiration_date, "%Y-%m-%d"
-        ).date()
+        desired_expiration_date = (
+            datetime.strptime(
+                desired_expiration_date,
+                "%Y-%m-%d",
+            ).date()
+        )
         time_delta_in_years = (
             (desired_expiration_date - today).days
         ) / 365.25
@@ -185,9 +222,13 @@ def get_ready_for_black_sholes_dict(
         dict_for_black_sholes[
             "current_ask"
         ] = option_chain_dict["current_ask"]
-        dict_for_black_sholes["impliedVolatility"] = (
+        dict_for_black_sholes[
+            "impliedVolatility"
+        ] = (
             next(iter(option_chain_dict.values()))
-        )["impliedVolatility"]
+        )[
+            "impliedVolatility"
+        ]
         dict_for_black_sholes[
             "time_delta_in_years"
         ] = time_delta_in_years
@@ -212,10 +253,14 @@ def calculate_the_greeks(
         and submit_button is not None
         and call_or_put_choice is not None
     ):
-        underlying_price = ready_for_black_sholes_dict[
-            "current_ask"
-        ]
-        strike_price = ready_for_black_sholes_dict["strike"]
+        underlying_price = (
+            ready_for_black_sholes_dict[
+                "current_ask"
+            ]
+        )
+        strike_price = (
+            ready_for_black_sholes_dict["strike"]
+        )
         time_to_maturity = round(
             ready_for_black_sholes_dict[
                 "time_delta_in_years"
@@ -275,7 +320,9 @@ def calculate_the_greeks(
     Input("calls-or-puts-dropdown", "value"),
 )
 def update_the_delta_output(
-    the_greeks_dict, n_clicks_submit, call_or_put_choice
+    the_greeks_dict,
+    n_clicks_submit,
+    call_or_put_choice,
 ):
     if (
         the_greeks_dict is not None
@@ -286,7 +333,9 @@ def update_the_delta_output(
             "call" in call_or_put_choice
             and call_or_put_choice
         ):
-            delta = round(the_greeks_dict["delta"], 8)
+            delta = round(
+                the_greeks_dict["delta"], 8
+            )
             return (
                 f"According to Black-Sholes, this contract has a {round(delta * 100,2)}% chance of being profitable. "
                 f"Given a $1 change in underlying this call will likely gain or lose"
@@ -296,7 +345,10 @@ def update_the_delta_output(
             "put" in call_or_put_choice
             and call_or_put_choice
         ):
-            delta = round(the_greeks_dict["delta"], 8) * -1
+            delta = (
+                round(the_greeks_dict["delta"], 8)
+                * -1
+            )
             return (
                 f"According to Black-Sholes, this contract has a {round(delta * 100,2)}% chance of being profitable. "
                 f"Given a $1 change in underlying this put will likely gain or lose "
@@ -315,7 +367,9 @@ def update_the_delta_output(
     Input("calls-or-puts-dropdown", "value"),
 )
 def update_the_gamma_output(
-    the_greeks_dict, n_clicks_submit, call_or_put_choice
+    the_greeks_dict,
+    n_clicks_submit,
+    call_or_put_choice,
 ):
     if (
         call_or_put_choice is not None
@@ -348,14 +402,19 @@ def update_the_gamma_output(
     Input("calls-or-puts-dropdown", "value"),
 )
 def update_the_theta_output(
-    the_greeks_dict, n_clicks_submit, call_or_put_choice
+    the_greeks_dict,
+    n_clicks_submit,
+    call_or_put_choice,
 ):
     if (
         call_or_put_choice is not None
         and the_greeks_dict is not None
         and n_clicks_submit > 0
     ):
-        theta = round(the_greeks_dict["theta"], 8) * -1
+        theta = (
+            round(the_greeks_dict["theta"], 8)
+            * -1
+        )
         if "call" in call_or_put_choice:
             return (
                 f"According to Black-Sholes, this call contract will lose ${round(theta*100,3)} "
@@ -381,7 +440,9 @@ def update_the_theta_output(
     Input("calls-or-puts-dropdown", "value"),
 )
 def update_the_vega_output(
-    the_greeks_dict, n_clicks_submit, call_or_put_choice
+    the_greeks_dict,
+    n_clicks_submit,
+    call_or_put_choice,
 ):
     if (
         call_or_put_choice is not None
@@ -412,7 +473,9 @@ def update_the_vega_output(
     Input("calls-or-puts-dropdown", "value"),
 )
 def update_the_vega_output(
-    the_greeks_dict, n_clicks_submit, call_or_put_choice
+    the_greeks_dict,
+    n_clicks_submit,
+    call_or_put_choice,
 ):
     if (
         call_or_put_choice is not None
@@ -427,7 +490,10 @@ def update_the_vega_output(
                 f"changes than short-term options."
             )
         elif "put" in call_or_put_choice:
-            rho = round(the_greeks_dict["rho"], 8) * -1
+            rho = (
+                round(the_greeks_dict["rho"], 8)
+                * -1
+            )
             return (
                 f"With a 1 percentage point increase in interest rates, the value of this put will increase by "
                 f"{round(rho, 3)*100}%. Note: LEAPS are typically more sensitive to interest rate "
@@ -456,4 +522,6 @@ def get_contract_overview(option_chain_row):
 
 
 if __name__ == "__main__":
-    app.run_server(host="0.0.0.0", port="8051", debug=False)
+    app.run_server(
+        host="0.0.0.0", port="8051", debug=False
+    )

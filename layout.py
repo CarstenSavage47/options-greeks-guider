@@ -1,19 +1,8 @@
-import pandas
-import dash
 from dash import (
-    Dash,
     dcc,
     html,
-    Input,
-    Output,
-    State,
-    dash_table,
 )
-from loguru import logger
-import webbrowser
-import yfinance as yf
-import py_vollib.black_scholes as bs
-import py_vollib.black_scholes.greeks.analytical as bs_greeks
+
 from datetime import date, timedelta, datetime
 
 # Generate list of dates for expiration date dropdown
@@ -30,23 +19,24 @@ layout = html.Div(
         html.Div(
             [
                 html.H1(
-                    "Options Helper App",
+                    "Options Greeks Guider",
                     style={
                         "text-align": "left",
                         "font-size": "32px",
+                        "margin-left": "20px",
                     },
                 ),
-                html.P("Please Select Call or Put:"),
+                html.P("Please Select Call or Put:", style={"margin-left": "20px"}),
                 dcc.Dropdown(
                     ["call", "put"],
                     id="calls-or-puts-dropdown",
-                    style={"width": "150px"},
+                    style={"width": "150px", "margin-left": "10px"},
                 ),
                 html.Br(),
                 dcc.Store(
                     id="calls-or-puts-dropdown-value"
                 ),
-                html.P("Please Input the Ticker:"),
+                html.P("Please Input the Ticker:", style={"margin-left": "20px"}),
                 dcc.Input(
                     id="ticker",
                     placeholder="Input Stock Ticker",
@@ -54,12 +44,13 @@ layout = html.Div(
                         "height": "33px",
                         "width": "150px",
                         "font-size": "14px",
+                        "margin-left": "20px",
                     },
                 ),
                 html.Br(),
                 dcc.Store(id="ticker-output"),
                 html.Br(),
-                html.P("Please Input the Strike:"),
+                html.P("Please Input the Strike:", style={"margin-left": "20px"}),
                 dcc.Input(
                     id="strike-input",
                     placeholder="Input Strike",
@@ -67,6 +58,7 @@ layout = html.Div(
                         "height": "33px",
                         "width": "150px",
                         "font-size": "14px",
+                        "margin-left": "20px",
                     },
                 ),
                 html.Br(),
@@ -81,7 +73,8 @@ layout = html.Div(
                 dcc.Store(id="the-greeks"),
                 html.Br(),
                 html.P(
-                    "Please Select the Expiration Date:"
+                    "Please Select the Expiration Date:",
+                    style={"margin-left": "20px"}
                 ),
                 dcc.Dropdown(
                     id="select-expiration-date-dropdown",
@@ -90,7 +83,7 @@ layout = html.Div(
                         for d in date_strings
                     ],
                     value=date_strings[0],
-                    style={"width": "150px"},
+                    style={"width": "150px", "margin-left": "10px"},
                 ),
                 html.Br(),
                 html.Button(
@@ -104,6 +97,7 @@ layout = html.Div(
                         "padding": "10px 20px",
                         "margin-bottom": "20px",
                         "font-size": "14px",
+                        "margin-left": "20px"
                     },
                 ),
             ],
@@ -113,6 +107,9 @@ layout = html.Div(
                 "width": "45%",
             },
         ),
+html.Div(
+    [
+        # First Row
         html.Div(
             [
                 html.Div(
@@ -196,8 +193,15 @@ layout = html.Div(
                         "background-color": "#f9f9f9",
                         "box-shadow": "2px 2px 2px lightgrey",
                         "width": "300px",
+                        "align-items": "center",
                     },
                 ),
+            ],
+            style={"display": "flex", "flex-wrap": "wrap"},
+        ),
+        # Second Row
+        html.Div(
+            [
                 html.Div(
                     [
                         html.P(
@@ -223,6 +227,7 @@ layout = html.Div(
                         "background-color": "#f9f9f9",
                         "box-shadow": "2px 2px 2px lightgrey",
                         "width": "300px",
+                        "align-items": "center",
                     },
                 ),
                 html.Div(
@@ -250,6 +255,7 @@ layout = html.Div(
                         "background-color": "#f9f9f9",
                         "box-shadow": "2px 2px 2px lightgrey",
                         "width": "300px",
+                        "align-items": "center",
                     },
                 ),
                 html.Div(
@@ -277,9 +283,14 @@ layout = html.Div(
                         "background-color": "#f9f9f9",
                         "box-shadow": "2px 2px 2px lightgrey",
                         "width": "300px",
+                        "align-items": "center",
                     },
                 ),
-            ]
+            ],
+            style={"display": "flex", "flex-wrap": "wrap"},
         ),
+    ]
+)
+
     ]
 )
