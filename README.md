@@ -26,6 +26,5 @@ Steps:
 - The real risk-free rate is 2%
 
 # To-do's
-- Make the layout look more appealing.
 - Put layout and functions in separate files.
 
