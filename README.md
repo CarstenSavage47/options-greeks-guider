@@ -6,11 +6,11 @@ For example:
 - How will changes in interest rates affect my contract?
 
 # Overview
-Steps:
-- Select call or put,
+Select:
+- Call or put,
 - Input ticker name,
 - Input strike,
-- Select expiration date
+- Expiration date
 
 # Setup
 - Clone repository.
