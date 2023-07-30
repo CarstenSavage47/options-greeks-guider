@@ -14,7 +14,7 @@ Select:
 
 # Setup
 - Clone repository.
-- Use pip install -r requirements.txt to install required modules.
+- Use pip install -r requirements.txt to install required modules (optional).
 - Run it from terminal with: python main.py
 - Follow the link in terminal to local server (open it in browser).
 
